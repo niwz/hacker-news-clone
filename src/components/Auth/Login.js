@@ -8,7 +8,7 @@ const INITIAL_STATE = {
 }
 
 function Login(props) {
-  const { handleSubmit, handleChange, values } = useFormValidation(INITIAL_STATE)
+  const { handleSubmit, handleBlur, handleChange, values, errors, isSubmitting } = useFormValidation(INITIAL_STATE)
   const [login, setLogin] = useState(true)
 
   return (
@@ -28,21 +28,29 @@ function Login(props) {
         <input 
           type="email"
           name="email"
+          onBlur={ () => handleBlur() }
+          className={errors.email && 'error-input'}
           value={values.email}
           onChange={ (event) => handleChange(event) }
           placeholder="Your email"
           autoComplete="off"
         />
+        {errors.email && <p className="error-text">{errors.email}</p>}
         <input 
           type="password"
           name="password"
+          onBlur={ () => handleBlur() }
+          className={errors.password && 'error-input'}
           value={values.password}
           onChange={(event) => handleChange(event)}
           placeholder="Choose a secure password"
         />
+        {errors.password && <p className="error-text">{errors.password}</p>}
         <div className="flex mt3">
           <button 
             type="submit" 
+            disabled={isSubmitting}
+            style={{ background: isSubmitting ? "grey" : "orange" }}
             className="button pointer mr2">
             Submit
           </button>
