@@ -6,11 +6,16 @@ import ForgotPassword from './Auth/ForgotPassword';
 import SearchLinks from './Link/SearchLinks';
 import LinkList from './Link/LinkList';
 import LinkDetail from './Link/LinkDetail';
-import Header from './Header'
+import Header from './Header';
+import useAuth from './Auth/useAuth';
+import firebase, { FirebaseContext } from '../firebase/';
 
 function App() {
+  const user = useAuth()
+
   return (
     <BrowserRouter>
+      <FirebaseContext.Provider value={{ user, firebase }}>
       <div className="app-container">
         <Header />
         <div className="route-container">
@@ -26,6 +31,7 @@ function App() {
           </Switch>
         </div>
       </div>
+      </FirebaseContext.Provider>
     </BrowserRouter>
   );
 }
