@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import validateLogin from "./validateLogin";
 
-function useFormValidation(initialState) {
+function useFormValidation(initialState, validate, authenticate) {
     const [values, setValues] = useState(initialState)
     const [errors, setErrors] = useState({})
     const [isSubmitting, setSubmitting] = useState(false)
@@ -10,9 +9,11 @@ function useFormValidation(initialState) {
         if (isSubmitting) {
             const noErrors = Object.keys(errors).length === 0
             if (noErrors) {
-                console.log('Authenticated', values)
+                authenticate();
+                setSubmitting(false);
+            } else {
+                setSubmitting(false);
             }
-            setSubmitting(false)
         }
     }, [errors])
 
@@ -25,18 +26,17 @@ function useFormValidation(initialState) {
     }
 
     function handleBlur() {
-        const validationErrors = validateLogin(values);
-        setErrors(validationErrors);
-        console.log({ errors });
+        const validationErrors = validate(values);
+        const noErrors = Object.keys(errors).length === 0;
+        if (noErrors) setErrors(validationErrors);
     }
 
     function handleSubmit(event) {
         event.preventDefault();
-        const validationErrors = validateLogin(values);
-        setSubmitting(true)
-        console.log({ errors });
-        console.log({ values });
-    }
+        const validationErrors = validate(values);
+        setErrors(validationErrors);
+        setSubmitting(true);
+      }
 
     return { handleSubmit, handleBlur, handleChange, values, errors, isSubmitting }
 }
